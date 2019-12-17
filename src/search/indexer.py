@@ -15,17 +15,17 @@ class InvIndex:
     def get(self, word):
         return self.dictionary[word]
     def get_all(self, query):
-        clovar = {} # clovar[индекс документа] = как часто встречается  
+        dict_doc = {} # dict_doc[индекс документа] = как часто встречается  
         
         for word in query.get_clean():
             list_index_document = self.get(word) # множество индексов документов в которых встречается слова из запроса
             for index_document in list_index_document:
-                if index_document not in clovar: # проверка присутствия индекса документа в словаре(clovar)
-                    clovar[index_document] = 1 
+                if index_document not in dict_doc: # проверка присутствия индекса документа в словаре(dict_doc)
+                    dict_doc[index_document] = 1 
                 else:
-                    clovar[index_document] = clovar[index_document] + 1
+                    dict_doc[index_document] = dict_doc[index_document] + 1
         result = [] # список [индекс документа, как часто встречается документ по запросу каждого слова(суммарно)]
-        for index_document, value in clovar.items():
+        for index_document, value in dict_doc.items():
             result.append((index_document, value))
         result = sorted(result, key=lambda x: (-x[1], x[0])) # сортируем наш список в порядке убывания значения, затем по индексу документа
         answer = []
