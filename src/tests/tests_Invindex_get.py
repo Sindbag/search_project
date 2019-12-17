@@ -1,5 +1,6 @@
 import unittest
 from search.indexer import InvIndex
+from search.query import Query
 
 
 class TestInvIndexGetMethods(unittest.TestCase):
@@ -10,8 +11,8 @@ class TestInvIndexGetMethods(unittest.TestCase):
         inverted_index.dictionary["rn"] = [0]  
         inverted_index.dictionary["we"] = [0]  
         inverted_index.dictionary["et"] = [1]
-        q = "qw     e"
-        self.assertEqual(inverted_index.get_all(q), [1, 0])
+        q = Query("qw     e")
+        self.assertEqual(inverted_index.get_all(q), [0])
 
 
 if __name__ == '__main__':
