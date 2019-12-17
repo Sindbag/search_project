@@ -39,22 +39,6 @@ class InvIndex:
         for word in words_clear(text):
             self.dictionary[word].add(len(self.documents) - 1)
 
-    def get(self, word):  # ->list
-        pass
-
-    def get_all(self, query):
-        pass
-
-
-
-class InvIndex:
-    def __init__(self):
-        self.dictionary = defaultdict(set)
-        self.documents = []
-
-    def add_document(self, doc):
-        pass
-
     def get(self, word):
         return self.dictionary[word]
 
