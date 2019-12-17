@@ -1,5 +1,5 @@
 import random
-from .indexer import index
+from search.indexer import index
 
 
 def score(clean_query, document):
