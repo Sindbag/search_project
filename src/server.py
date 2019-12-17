@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
-from .search.search import retrieve, score_documents, prepare_serp
-from .search.indexer import build_index
-from .search.query import Query
+from search.search import retrieve, score_documents, prepare_serp
+from search.indexer import build_index
+from search.query import Query
 from time import time
 
 app = Flask(__name__, template_folder='.')
@@ -28,6 +28,8 @@ def index():
         results=results
     )
 
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
+
+
+
