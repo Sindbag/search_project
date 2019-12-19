@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import unittest
 from search.indexer import split_query
 from search.indexer import InvIndex
@@ -5,7 +7,7 @@ from search.query import Query
 
 
 class TestInvIndexGetMethods(unittest.TestCase):
-    def test_inv_index_get_0(self):
+    def test_inv_index_get_empty_request(self):
         inverted_index = InvIndex()
         inverted_index.dictionary["qwerty"] = set([3])     
         inverted_index.dictionary["admin"] = set([3])  
@@ -17,9 +19,19 @@ class TestInvIndexGetMethods(unittest.TestCase):
         inverted_index.dictionary["rn"] = set([0])  
         inverted_index.dictionary["we"] = set([0])
         inverted_index.dictionary["et"] = set([0])        
-        q = Query("qw e")
-        self.assertEqual(inverted_index.get_all(q), [])    
-    def test_inv_index_get_1(self):
+        q = Query("")
+        self.assertEqual(inverted_index.get_all(q), [])  
+        
+    def test_inv_index_get_max_len_2(self):
+        inverted_index = InvIndex()  
+        inverted_index.dictionary["qw"] = set([0])  
+        inverted_index.dictionary["rn"] = set([0])  
+        inverted_index.dictionary["we"] = set([0])
+        inverted_index.dictionary["et"] = set([0])        
+        q = Query("we ty  gh kj bn ар лд нп ша")
+        self.assertEqual(inverted_index.get_all(q), [])
+        
+    def test_inv_index_get_words_in_one_document(self):
         inverted_index = InvIndex()
         inverted_index.dictionary["qwerty"] = set([3])     
         inverted_index.dictionary["admin"] = set([3])  
@@ -31,22 +43,94 @@ class TestInvIndexGetMethods(unittest.TestCase):
         inverted_index.dictionary["rn"] = set([0])  
         inverted_index.dictionary["we"] = set([0])
         inverted_index.dictionary["et"] = set([0])        
-        q = Query("codeforces,,, fatnet,  father qwerty")
-        self.assertEqual(inverted_index.get_all(q), [1, 2, 3])
-    def test_inv_index_get_2(self):
-        inverted_index = InvIndex()
-        inverted_index.dictionary["qwerty"] = [3]     
-        inverted_index.dictionary["admin"] = [3]  
-        inverted_index.dictionary["father"] = [2]  
-        inverted_index.dictionary["fatnet"] = [1]  
-        inverted_index.dictionary["codeforces"] = [1]
-        inverted_index.dictionary["sister"] = [2]     
-        inverted_index.dictionary["qw"] = [0]  
-        inverted_index.dictionary["rn"] = [0]  
-        inverted_index.dictionary["we"] = [0]  
-        inverted_index.dictionary["et"] = [0]        
         q = Query("codeforces fatnet  father qwerty")
-        self.assertEqual(inverted_index.get_all(q), [1,2,3])  
+        self.assertEqual(inverted_index.get_all(q), [1,2,3]) 
+        
+    def test_inv_index_get_words_in_many_documents(self):
+        inverted_index = InvIndex()
+        inverted_index.dictionary["qwerty"] = set([3])     
+        inverted_index.dictionary["admin"] = set([3, 4, 5, 6, 7, 8])  
+        inverted_index.dictionary["father"] = set([2, 8, 10])  
+        inverted_index.dictionary["fatnet"] = set([1, 8, 9])  
+        inverted_index.dictionary["codeforces"] = set([1, 8])
+        inverted_index.dictionary["sister"] = set([2, 9, 10])    
+        inverted_index.dictionary["qw"] = set([0])  
+        inverted_index.dictionary["rn"] = set([0])  
+        inverted_index.dictionary["we"] = set([0])
+        inverted_index.dictionary["et"] = set([0])        
+        q = Query("codeforces fatnet  father qwerty admin qw we")
+        self.assertEqual(inverted_index.get_all(q), [8, 1, 3, 2, 4, 5, 6, 7, 9, 10])     
+        
+    def test_inv_index_get_no_words_in_the_documents(self):
+        inverted_index = InvIndex()
+        inverted_index.dictionary["qwerty"] = set([3])     
+        inverted_index.dictionary["admin"] = set([3, 4, 5, 6, 7, 8])  
+        inverted_index.dictionary["father"] = set([2, 8, 10])  
+        inverted_index.dictionary["fatnet"] = set([1, 8, 9])  
+        inverted_index.dictionary["codeforces"] = set([1, 8])
+        inverted_index.dictionary["sister"] = set([2, 9, 10])    
+        inverted_index.dictionary["qw"] = set([0])  
+        inverted_index.dictionary["rn"] = set([0])  
+        inverted_index.dictionary["we"] = set([0])
+        inverted_index.dictionary["et"] = set([0])        
+        q = Query("пароль тема признак призрак")
+        self.assertEqual(inverted_index.get_all(q), []) 
+    
+    def test_inv_index_get_all(self):
+        inverted_index = InvIndex()
+        inverted_index.dictionary["qwerty"] = set([3])     
+        inverted_index.dictionary["admin"] = set([3, 4, 5, 6, 7, 8])  
+        inverted_index.dictionary["father"] = set([2, 8, 10])  
+        inverted_index.dictionary["fatnet"] = set([1, 8, 9])  
+        inverted_index.dictionary["codeforces"] = set([1, 8])
+        inverted_index.dictionary["sister"] = set([2, 9, 10])    
+        inverted_index.dictionary["qw"] = set([0])  
+        inverted_index.dictionary["rn"] = set([0])  
+        inverted_index.dictionary["we"] = set([0])
+        inverted_index.dictionary["et"] = set([0])        
+        q = Query("пароль тема признак призрак, er rt oi ug dj vh xb nt ck пр по ро ар ва ка на не ни рп ра сп, qwerty admin father")
+        self.assertEqual(inverted_index.get_all(q), [3, 8, 2, 4, 5, 6, 7, 10])  
+        
+        
+    def test_split_query_0(self):       
+        q = split_query(Query("codeforces fatnet father qwerty").get_text())
+        self.assertEqual(q, ["codeforces", "fatnet",  "father", "qwerty"])    
+        
+    def test_split_query_space(self):      
+        q = split_query(Query("         codeforces      fatnet                      father            qwerty      ").get_text())
+        self.assertEqual(q, ["codeforces", "fatnet",  "father", "qwerty"])  
+        
+    def test_split_query_exclamation_mark(self):       
+        q = split_query(Query("!!!!!!!! staf02 !!!!!!!! eagIe !!!!!!!!!!").get_text())
+        self.assertEqual(q, ["staf02", "eagIe"])
+        
+    def test_split_query_question_mark(self):       
+        q = split_query(Query("qwerty ?????????? staf02 ??????????????? eagIe ???????????").get_text())
+        self.assertEqual(q, ["qwerty", "staf02", "eagIe"])    
+        
+    def test_split_query_minus(self):      
+        q = split_query(Query("---- cf ------ codeforces ------------------- fatnet --------- go ---------").get_text())
+        self.assertEqual(q, ["codeforces", "fatnet"])    
+        
+    def test_split_query_plus(self):      
+        q = split_query(Query("+++ cf ++++ codeforces +++++++++ fatnet +++++++ go ++++++").get_text())
+        self.assertEqual(q, ["codeforces", "fatnet"])
+        
+    def test_split_query_point(self):      
+        q = split_query(Query("red.... blue..... black").get_text())
+        self.assertEqual(q, ["red", "blue", "black"])
+        
+    def test_split_query_comma(self):      
+        q = split_query(Query("red,,,,,,, ,blue,,,,,,, ,black,").get_text())
+        self.assertEqual(q, ["red", "blue", "black"])
+        
+    def test_split_query_bigrams(self):      
+        q = split_query(Query("qw er ty no ng hf k jf  j j j dl l j  ао ое оа он но ка те").get_text())
+        self.assertEqual(q, [])  
+        
+    def test_split_query_all(self):      
+        q = split_query(Query("!!! пароль      == password,,,,,father   != fatnet.... пa - но,@#   name((username)) goodbay").get_text())
+        self.assertEqual(q, ["пароль", "password", "father", "fatnet", "name", "username", "goodbay"])  
 
 
 if __name__ == '__main__':
