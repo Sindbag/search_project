@@ -1,5 +1,6 @@
 import random
 from .indexer import index
+from .query import Query
 
 
 def score(clean_query, document):
@@ -11,11 +12,12 @@ def score(clean_query, document):
 def retrieve(query):
     # Возвращает начальный список релевантных документов
     # (желательно, не бесконечный)
+
     candidates = []
-    for doc in index:
-        if query.get_text().lower() in doc.get_title().lower() or\
-                query.get_text().lower() in doc.get_text().lower():
-            candidates.append(doc)
+    print(query)
+    print(index.get_all(query))
+    for doc in index.get_all(query):
+        candidates.append(index.documents[doc])
     return candidates[:50]
 
 
