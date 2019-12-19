@@ -7,7 +7,6 @@ from search.query import Query
 import codecs
 import os
 
-
 def split_query(query):
     word = ""
     words = []
@@ -46,7 +45,7 @@ class InvIndex:
             word_doc_idxs = self.get(word)
             for index_document in word_doc_idxs:
                 if index_document not in doc_freqs:
-                    doc_freqs[index_document] = 1
+                    doc_freqs[index_document] = 1 
                 else:
                     doc_freqs[index_document] = doc_freqs[index_document] + 1
         doc_freq_pairs = []
@@ -67,4 +66,3 @@ def build_index(path):
     filter(lambda s: (s[-4:]) == ".txt", arr)
     for file in arr:
         index.add_document(path + "/" + file)
-
