@@ -3,7 +3,10 @@
 import unittest
 from search.indexer import split_query
 from search.indexer import InvIndex
+from search.indexer import build_index
 from search.query import Query
+from search.indexer import split_query
+from search.indexer import index
 
 
 class TestInvIndexGetMethods(unittest.TestCase):
@@ -132,6 +135,13 @@ class TestInvIndexGetMethods(unittest.TestCase):
         q = split_query(Query("!!! пароль      == password,,,,,father   != fatnet.... пa - но,@#   name((username)) goodbay").get_text())
         self.assertEqual(q, ["пароль", "password", "father", "fatnet", "name", "username", "goodbay"])  
 
+    def test_build(self):
+        build_index("../test")
+        arr = ["hello", "honey", "pie", "good", "very", "bad", "window", "apple", "name", "grigorij", "like", "apples", "bye"]
+        arr.sort()
+        arr1 = index.dictionary.keys()
+        arr1.sort()
+        self.assertEqual(arr1, arr)
 
 if __name__ == '__main__':
     unittest.main()

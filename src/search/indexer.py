@@ -30,17 +30,17 @@ class InvIndex:
     def add_document(self, path):
         f = codecs.open(path, "r", "utf-8")
         text = f.read()
-        words = split_query(text);
+        words = split_query(text)
+        self.documents.append(Document(path, path, path))
         for s in words:
-            self.dictionary[s].add(Document(path, path, path))
-            self.documents.append(Document(path, path, path))
+            self.dictionary[s].add(len(self.documents) - 1)
 
     def get(self, word):
         return self.dictionary[word]
 
     def get_all(self, query):
-        doc_freqs = {}  
-        
+        doc_freqs = {}
+
         for word in split_query(query.get_text()):
             word_doc_idxs = self.get(word)
             for index_document in word_doc_idxs:
@@ -59,31 +59,10 @@ class InvIndex:
 
 index = InvIndex()
 
-def build_index(path):
-    # Считывает данные и строит индекс
-
-    for file in os.listdir(path):
-        index.add_document(path + "/" + file)
 
 def build_index(path):
     # Считывает данные и строит индекс
-    
-    for file in os.listdir(path):
+    arr = os.listdir(path)
+    filter(lambda s: (s[-4:]) == ".txt", arr)
+    for file in arr:
         index.add_document(path + "/" + file)
-    
-    index.append(Document(
-        'The Beatles — Come Together',
-        'Here come old flat top\nHe come groovin\' up slowly',
-        'path_1'
-    ))
-    index.append(Document(
-        'The Rolling Stones — Brown Sugar',
-        'Gold Coast slave ship bound for cotton fields\nSold in the market down in New Orleans',
-        'path_2'
-    ))
-    index.append(Document(
-        'Физтех — Я променял девичий смех',
-        'Я променял девичий смех\nНа голос лектора занудный,',
-        'path_3'
-    )) 
-    
