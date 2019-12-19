@@ -42,7 +42,7 @@ class InvIndex:
     def get_all(self, query):
         doc_freqs = {}
 
-        for word in split_query(query):
+        for word in split_query(query.get_text()):
             word_doc_idxs = self.get(word)
             for index_document in word_doc_idxs:
                 if index_document not in doc_freqs:
@@ -60,24 +60,8 @@ class InvIndex:
 
 index = InvIndex()
 
+
 def build_index(path):
     # Считывает данные и строит индекс
-
     for file in os.listdir(path):
         index.add_document(path + "/" + file)
-
-    index.append(Document(
-        'The Beatles — Come Together',
-        'Here come old flat top\nHe come groovin\' up slowly',
-        'path_1'
-    ))
-    index.append(Document(
-        'The Rolling Stones — Brown Sugar',
-        'Gold Coast slave ship bound for cotton fields\nSold in the market down in New Orleans',
-        'path_2'
-    ))
-    index.append(Document(
-        'Физтех — Я променял девичий смех',
-        'Я променял девичий смех\nНа голос лектора занудный,',
-        'path_3'
-    )) 
