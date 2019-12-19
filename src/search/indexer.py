@@ -7,7 +7,6 @@ from search.query import Query
 import codecs
 import os
 
-
 def split_query(query):
     word = ""
     words = []
@@ -47,6 +46,13 @@ class InvIndex:
             for index_document in word_doc_idxs:
                 if index_document not in doc_freqs:
                     doc_freqs[index_document] = 1
+        doc_freqs = {}  
+        
+        for word in query.get_clean():
+            word_doc_idxs = self.get(word)
+            for index_document in word_doc_idxs:
+                if index_document not in doc_freqs:
+                    doc_freqs[index_document] = 1 
                 else:
                     doc_freqs[index_document] = doc_freqs[index_document] + 1
         doc_freq_pairs = []
@@ -66,6 +72,12 @@ def build_index(path):
     for file in os.listdir(path):
         index.add_document(path + "/" + file)
 
+def build_index(path):
+    # Считывает данные и строит индекс
+    
+    for file in os.listdir(path):
+        index.add_document(path + "/" + file)
+    
     index.append(Document(
         'The Beatles — Come Together',
         'Here come old flat top\nHe come groovin\' up slowly',
