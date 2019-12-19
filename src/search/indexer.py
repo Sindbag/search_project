@@ -1,7 +1,7 @@
 from collections import defaultdict
 from .document import Document
-from collections import defaultdict
 import codecs
+import os
 
 
 def check(sym):
@@ -20,10 +20,10 @@ def words_clear(words):
             curr_word += sym
         else:
             if len(curr_word) > 2:
-                words_del += [curr_word]
+                words_del.append(curr_word)
             curr_word = ""
     if len(curr_word) > 2:
-        words_del += [curr_word]
+        words_del.append(curr_word)
     return words_del
 
 
@@ -33,11 +33,13 @@ class InvIndex:
         self.documents = []
 
     def add_document(self, path):
-        file = codecs.open(path, 'r', "utf-8")
-        text = file.read()
-        self.documents += [Document(path, path, path)]
-        for word in words_clear(text):
-            self.dictionary[word].add(len(self.documents) - 1)
+        self.documents.append(Document(path, path, path))
+        file_text = codecs.open(path, 'r', "utf-8")
+        line = file_text.readline()
+        while line:
+            for word in words_clear(line):
+                self.dictionary[word].add(len(self.documents) - 1)
+            line = file_text.readline()
 
     def get(self, word):
         return self.dictionary[word]
@@ -61,20 +63,7 @@ class InvIndex:
 index = InvIndex()
 
 
-def build_index():
+def build_index(path):
     # Считывает данные и строит индекс
-    index.append(Document(
-        'The Beatles — Come Together',
-        'Here come old flat top\nHe come groovin\' up slowly',
-        'path_1'
-    ))
-    index.append(Document(
-        'The Rolling Stones — Brown Sugar',
-        'Gold Coast slave ship bound for cotton fields\nSold in the market down in New Orleans',
-        'path_2'
-    ))
-    index.append(Document(
-        'Физтех — Я променял девичий смех',
-        'Я променял девичий смех\nНа голос лектора занудный,',
-        'path_3'
-    ))
+    for file in os.listdir(path):
+        index.add_document(path + "/" + file)
