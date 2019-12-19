@@ -39,16 +39,9 @@ class InvIndex:
         return self.dictionary[word]
 
     def get_all(self, query):
-        doc_freqs = {}
-
-        for word in split_query(query):
-            word_doc_idxs = self.get(word)
-            for index_document in word_doc_idxs:
-                if index_document not in doc_freqs:
-                    doc_freqs[index_document] = 1
         doc_freqs = {}  
         
-        for word in query.get_clean():
+        for word in split_query(query.get_text()):
             word_doc_idxs = self.get(word)
             for index_document in word_doc_idxs:
                 if index_document not in doc_freqs:
@@ -93,3 +86,4 @@ def build_index(path):
         'Я променял девичий смех\nНа голос лектора занудный,',
         'path_3'
     )) 
+    
