@@ -63,20 +63,10 @@ class InvIndex:
 index = InvIndex()
 
 
-def build_index():
+def build_index(path):
     # Считывает данные и строит индекс
-    index.append(Document(
-        'The Beatles — Come Together',
-        'Here come old flat top\nHe come groovin\' up slowly',
-        'path_1'
-    ))
-    index.append(Document(
-        'The Rolling Stones — Brown Sugar',
-        'Gold Coast slave ship bound for cotton fields\nSold in the market down in New Orleans',
-        'path_2'
-    ))
-    index.append(Document(
-        'Физтех — Я променял девичий смех',
-        'Я променял девичий смех\nНа голос лектора занудный,',
-        'path_3'
-    ))
+    directory = path
+    files = os.listdir(directory)
+    texts = filter(lambda x: x.endwith(".txt"), files)
+    for docs in texts:
+        index.add_document(os.path.join(path, docs))
